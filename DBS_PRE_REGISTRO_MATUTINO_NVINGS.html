@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎓 Sistema Institucional - CETis 53</title>
+
+<style>
+/* =========================================
+   VARIABLES Y RESET
+   ========================================= */
+:root {
+  --vino: #7b1e3a; --vino-light: #9e2a4f; --vino-dark: #4a0f22;
+  --bg-app: #f4f7f6; --white: #ffffff;
+  --text-main: #334155; --text-muted: #64748b; --border: #e2e8f0;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+body { color: var(--text-main); overflow-x: hidden; background: var(--bg-app); }
+
+/* =========================================
+   LOGIN SCREEN
+   ========================================= */
+#login-screen {
+  position: fixed; inset: 0; z-index: 2000; display: flex; justify-content: center; align-items: center;
+  background: linear-gradient(-45deg, #7b1e3a, #2d0e1b, #4a0f22, #9e2a4f);
+  background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+}
+@keyframes gradientBG { 0% {background-position: 0% 50%} 50% {background-position: 100% 50%} 100% {background-position: 0% 50%} }
+
+.login-card {
+  background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2); padding: 40px; border-radius: 16px;
+  width: 360px; text-align: center; box-shadow: 0 25px 45px rgba(0,0,0,0.2); color: white;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+.login-card h2 { margin-bottom: 5px; font-size: 24px; font-weight: 700; }
+.login-card p { margin-bottom: 30px; font-size: 14px; opacity: 0.8; }
+.login-card input {
+  background: rgba(255, 255, 255, 0.9); border: none; padding: 14px; margin-bottom: 15px;
+  border-radius: 8px; width: 100%; font-size: 14px; color: var(--text-main); transition: 0.3s;
+}
+.login-card button { background: var(--vino-light); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 5px; }
+.login-card button:hover { background: var(--white); color: var(--vino-dark); transform: translateY(-2px); }
+
+/* =========================================
+   DASHBOARD LAYOUT
+   ========================================= */
+#app-screen { display: none; grid-template-columns: 240px 1fr; min-height: 100vh; }
+.sidebar { background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.05);}
+.sidebar-header { background: #0b1120; padding: 30px 20px; text-align: center; border-bottom: 1px solid #1e293b; }
+.sidebar-header h2 { font-size: 20px; color: #fff; margin-bottom: 5px; }
+.sidebar-header p { font-size: 12px; color: #94a3b8; }
+.sidebar-menu { padding: 20px 15px; flex-grow: 1; }
+.sidebar-menu div { margin: 5px 0; padding: 12px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; color: #cbd5e1; }
+.sidebar-menu div:hover, .sidebar-menu div.active { background: var(--vino); color: white; }
+.logout-btn { margin: 15px; padding: 12px; text-align: center; background: rgba(239,68,68,0.1); color: #ef4444; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s;}
+.logout-btn:hover { background: #ef4444; color: white; }
+
+.main { padding: 40px; max-width: 1200px; margin: 0 auto; width: 100%; height: 100vh; overflow-y: auto;}
+.header-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.header-title h1 { font-size: 26px; color: var(--text-main); font-weight: 700; }
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+.card { background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; border-top: 4px solid var(--vino); transition: transform 0.2s;}
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.card p { color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+.card span { font-size: 32px; font-weight: 700; color: var(--text-main); margin-top: 8px;}
+
+/* CONTENEDORES Y FORMULARIO */
+.box { background: var(--white); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 30px; border: 1px solid var(--border);}
+.box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border); }
+.box-header h3 { font-size: 18px; color: var(--text-main); font-weight: 600; }
+
+.form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.form-group { display: flex; flex-direction: column; }
+.form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+.form-span-2 { grid-column: span 2; }
+.form-span-3 { grid-column: span 3; }
+
+input { padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border); background: #f8fafc; font-size: 14px; transition: 0.2s; width: 100%; color: var(--text-main);}
+input:focus { border-color: var(--vino); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(123,30,58,.1); }
+input[style*="uppercase"] { text-transform: uppercase; }
+.input-locked { background-color: #f1f5f9; color: var(--vino); font-weight: 700; cursor: not-allowed; border-color: #cbd5e1; }
+
+button { padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; font-size: 14px; }
+.btn-primary { background: var(--vino); color: white; width: 100%; margin-top: 25px; height: 45px;}
+.btn-primary:hover:not(:disabled) { background: var(--vino-dark); transform: translateY(-1px);}
+.btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+.btn-secondary { background: #e2e8f0; color: #475569; width: 100%; margin-top: 10px; }
+.btn-secondary:hover { background: #cbd5e1; }
+
+/* BUSCADOR ESTILOS */
+.search-container { background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; border: 1px dashed #cbd5e1; }
+.search-container select { padding: 10px; border-radius: 6px; border: 1px solid var(--border); font-weight: 600; color: var(--text-main); outline: none; background: white;}
+.input-group { display: flex; align-items: center; background: white; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.prefix-box { background: #e2e8f0; padding: 10px 15px; font-weight: 700; color: var(--vino); font-family: monospace; border-right: 1px solid var(--border); }
+.input-group input { border: none; padding: 10px; outline: none; border-radius: 0; background: white;}
+.input-group input:focus { box-shadow: none; }
+
+/* TABLAS Y BOTONES DE ACCIÓN */
+/* Aquí aseguramos que soporte todos los registros con scroll */
+.table-responsive { overflow-x: auto; max-height: 500px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;}
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: #f8fafc; color: var(--text-muted); padding: 15px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 12px; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);}
+td { padding: 15px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: middle;}
+tr:hover td { background-color: #f1f5f9; }
+.badge-turno { background: #fce7f3; color: #9d174d; padding: 6px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+.action-btns { display: flex; gap: 8px; }
+.btn-icon { padding: 8px 10px; border-radius: 6px; border: none; cursor: pointer; transition: 0.2s; font-size: 14px;}
+.btn-edit { background: #e0f2fe; color: #0284c7; }
+.btn-edit:hover { background: #0284c7; color: white; }
+.btn-print { background: #fef08a; color: #ca8a04; }
+.btn-print:hover { background: #ca8a04; color: white; }
+
+/* MODALES & TOASTS */
+.modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px;}
+.modal-content { background: white; padding: 40px; border-radius: 16px; text-align: center; width: 420px; box-shadow: var(--shadow-lg); animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); max-height: 90vh; overflow-y: auto;}
+.modal-content.large { width: 800px; text-align: left; }
+.checkmark { font-size: 60px; color: #10b981; margin-bottom: 15px; text-align: center;}
+.toast { position: fixed; bottom: 30px; right: 30px; background: var(--text-main); color: white; padding: 15px 25px; border-radius: 8px; display: none; box-shadow: var(--shadow-lg); z-index: 1000; font-size: 15px; font-weight: 500;}
+@keyframes scaleIn { from{transform:scale(0.95); opacity:0} to{transform:scale(1); opacity:1} }
+.loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--vino); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* =========================================
+   PANTALLA OFFLINE / MANTENIMIENTO (MEJORADA)
+   ========================================= */
+#offline-screen {
+  position: fixed; inset: 0; z-index: 9999; display: none; align-items: center; justify-content: center;
+  background-color: var(--vino-dark); overflow: hidden; font-family: 'Segoe UI', sans-serif;
+}
+.offline-container {
+  background: #f8fafc; width: 95vw; height: 95vh; border: 12px solid #1e293b; border-radius: 16px;
+  position: relative; display: flex; flex-direction: column; align-items: center; padding-top: 6vh;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden;
+}
+.off-header { width: 85%; z-index: 10; text-align: center; }
+.off-header h1 { font-size: 3.5rem; color: var(--vino); font-weight: 800; line-height: 1; margin-bottom: 10px; letter-spacing: -1px; text-transform: uppercase;}
+.off-subtitle { font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; background: #f1f5f9; display: inline-block; padding: 5px 15px; border-radius: 20px; border: 1px solid #cbd5e1;}
+.off-alert { margin-top: 15px; color: #ef4444; font-weight: 600; font-size: 0.9rem; animation: pulse 2s infinite; }
+@keyframes pulse { 0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;} }
+
+.countdown-row { display: flex; gap: 15px; margin-top: 35px; justify-content: center;}
+.flip-card { background: #1e293b; color: white; padding: 15px 12px; border-radius: 10px; text-align: center; min-width: 90px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); position: relative; border-top: 2px solid #334155; }
+.flip-card::after { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 2px; background: rgba(0,0,0,0.4); }
+.flip-card span { font-size: 3rem; font-weight: 800; display: block; font-family: monospace; }
+.flip-card label { font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; margin-top: 8px; display: block; font-weight: 600; letter-spacing: 1px;}
+
+.construction-stage { position: absolute; bottom: 0; width: 100%; height: 50vh; pointer-events: none;}
+.worker-svg { position: absolute; left: 15%; bottom: 5%; height: 250px; z-index: 5; }
+.excavator-svg { position: absolute; right: 10%; bottom: 0; height: 300px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); animation: idle 2.5s infinite ease-in-out; }
+.wall { position: absolute; bottom: 5%; left: 25%; width: 220px; }
+.cone { position: absolute; bottom: 5%; width: 45px; }
+@keyframes idle { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-2deg) translateY(-8px); } }
+
+/* =========================================
+   DISEÑO IMPRESIÓN (ESTRICTAMENTE 1 HOJA)
+   ========================================= */
+#printArea { display: none; }
+@media print {
+  @page { margin: 5mm; size: letter; }
+  body * { visibility: hidden; }
+  body { background: white; margin: 0; padding: 0; color: #333; }
+  #printArea, #printArea * { visibility: visible; }
+  #printArea { display: flex; flex-direction: column; justify-content: space-between; position: absolute; left: 0; top: 0; width: 100%; height: 98vh; overflow: hidden; page-break-inside: avoid; }
+  .invoice { width: 100%; border: 1px solid #ddd; padding: 15px; box-sizing: border-box; border-radius: 8px; display: flex; flex-direction: column; justify-content: center;}
+  .inv-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--vino); padding-bottom: 8px; margin-bottom: 10px; }
+  .inv-logo h1 { font-size: 24px; color: var(--vino); margin: 0; letter-spacing: -1px; }
+  .inv-logo p { font-size: 10px; color: #777; margin-top: 3px; }
+  .inv-details { text-align: right; }
+  .inv-title { font-size: 18px; margin: 0 0 5px 0; }
+  .inv-folio { background: #f4f4f4; padding: 4px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; display: inline-block; margin-bottom: 3px;}
+  .inv-date { font-size: 10px; color: #555; }
+  .inv-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+  .inv-box { border: 1px solid #eee; padding: 10px; border-radius: 6px; background: #fafafa;}
+  .inv-box h4 { margin: 0 0 5px 0; font-size: 10px; color: var(--vino); text-transform: uppercase; border-bottom: 1px solid #ddd; padding-bottom: 3px; }
+  .inv-text { font-size: 11px; margin-bottom: 3px; line-height: 1.3; }
+  .inv-text strong { display: inline-block; width: 70px; color: #555; }
+  .inv-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+  .inv-table th { background: var(--vino); color: white; padding: 8px; font-size: 9px; text-transform: uppercase; text-align: left; border: 1px solid var(--vino);}
+  .inv-table td { padding: 8px; border-bottom: 1px solid #eee; border-left: 1px solid #eee; border-right: 1px solid #eee; font-size: 10px; }
+  .inv-turno-badge { background-color: var(--vino); color: white; font-weight: bold; padding: 3px 6px; border-radius: 4px; font-size: 10px; display: inline-block;}
+  .inv-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 15px; }
+  .inv-terms { font-size: 9px; color: #888; width: 55%; text-align: justify; }
+  .inv-sign { text-align: center; width: 200px; }
+  .inv-sign div { border-top: 1px solid #000; padding-top: 5px; font-size: 10px; font-weight: bold; }
+  .corte-linea { border-bottom: 1px dashed #999; margin: 10px 0; position: relative; text-align: center; }
+  .corte-linea::after { content: "✂️ Línea de corte"; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; font-size: 10px; color: #777; font-style: italic; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="offline-screen">
+  <div class="offline-container">
+    <div class="off-header">
+      <h1>Sin Conexión a Internet</h1>
+      <div class="off-subtitle">Sistema bloqueado para prevenir registros duplicados</div>
+      <div class="off-alert">⚠️ Esperando conexión con el servidor principal... No cierre esta pestaña.</div>
+      
+      <div class="countdown-row">
+        <div class="flip-card"><span id="off-h">00</span><label>Horas</label></div>
+        <div class="flip-card"><span id="off-m">00</span><label>Minutos</label></div>
+        <div class="flip-card"><span id="off-s">00</span><label>Segundos</label></div>
+      </div>
+    </div>
+
+    <div class="construction-stage">
+      <svg class="worker-svg" viewBox="0 0 100 150">
+        <rect x="35" y="60" width="30" height="80" fill="#334155" />
+        <circle cx="50" cy="40" r="20" fill="#ffdbac" />
+        <path d="M30 30 Q50 10 70 30" fill="var(--vino)" />
+        <rect x="40" y="20" width="20" height="10" fill="var(--vino)" rx="5" />
+      </svg>
+      <svg class="wall" viewBox="0 0 200 100">
+        <rect width="200" height="100" fill="var(--vino)" opacity="0.9" rx="5" />
+        <path d="M0 20 H200 M0 40 H200 M0 60 H200 M0 80 H200" stroke="#fff" stroke-width="2" opacity="0.5"/>
+        <path d="M20 0 V100 M60 0 V100 M100 0 V100 M140 0 V100 M180 0 V100" stroke="#fff" stroke-width="2" opacity="0.3"/>
+      </svg>
+      <svg class="excavator-svg" viewBox="0 0 300 200">
+        <rect x="150" y="80" width="80" height="70" rx="10" fill="var(--vino)" />
+        <rect x="160" y="90" width="40" height="30" rx="5" fill="#e2e8f0" opacity="0.8" />
+        <path d="M230 110 L280 40 L300 100" fill="none" stroke="var(--vino)" stroke-width="18" stroke-linecap="round" />
+        <rect x="140" y="150" width="120" height="30" rx="15" fill="#0f172a" />
+        <circle cx="160" cy="165" r="8" fill="#475569" />
+        <circle cx="200" cy="165" r="8" fill="#475569" />
+        <circle cx="240" cy="165" r="8" fill="#475569" />
+      </svg>
+      <svg class="cone" style="left: 55%;" viewBox="0 0 40 60">
+        <path d="M20 0 L40 60 L0 60 Z" fill="#f97316" />
+        <rect x="7" y="30" width="26" height="12" fill="white" />
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div id="login-screen">
+  <div class="login-card">
+    <h2>🎓 CETis 53</h2>
+    <p>Portal Institucional de Control Escolar</p>
+    <form id="loginForm">
+      <input type="text" id="user" placeholder="Usuario" required autocomplete="off">
+      <input type="password" id="pass" placeholder="Contraseña" required>
+      <button type="submit">Iniciar Sesión</button>
+    </form>
+    <p id="login-error" style="color: #fca5a5; margin-top: 15px; display: none; margin-bottom: 0;">⚠️ Credenciales incorrectas.</p>
+  </div>
+</div>
+
+<div id="app-screen">
+  <div class="sidebar">
+    <div class="sidebar-header"><h2>CETis 53</h2><p>Sistema de Registros</p></div>
+    <div class="sidebar-menu">
+      <div class="active">📊 Panel de Control</div>
+      <div>📋 Base de Alumnos</div>
+    </div>
+    <div class="logout-btn" onclick="cerrarSesion()">Cerrar Sesión</div>
+  </div>
+
+  <div class="main">
+    <div class="header-title">
+      <h1>Panel de Control Principal</h1>
+      <span id="fechaActualDisplay" style="color: var(--text-muted); font-size: 15px; font-weight: 500;"></span>
+    </div>
+    
+    <div class="cards">
+      <div class="card"><p>Total Histórico</p><span id="total">0</span></div>
+      <div class="card"><p>Último Folio Emitido</p><span id="folio" style="color: var(--vino);">---</span></div>
+      <div class="card"><p>Capturas Sesión</p><span id="hoy">0</span></div>
+    </div>
+
+    <div class="box">
+      <div class="box-header"><h3>📝 Nueva Captura de Alumno</h3></div>
+      <form id="registroForm">
+        <div class="form-grid">
+          <div class="form-group"><label>Nombre(s) del Alumno</label><input type="text" id="nombre" style="text-transform: uppercase;" required></div>
+          <div class="form-group"><label>Apellidos del Alumno</label><input type="text" id="apellidos" style="text-transform: uppercase;" required></div>
+          <div class="form-group"><label>CURP (18 Caracteres)</label><input type="text" id="curp" maxlength="18" pattern="[A-Za-z0-9]{18}" style="text-transform: uppercase;" required></div>
+          
+          <div class="form-group"><label>Fecha de Nacimiento</label><input type="date" id="nacimiento" required></div>
+          <div class="form-group"><label>Fecha de Emisión</label><input type="date" id="fechaEmision" class="input-locked" readonly></div>
+          <div class="form-group"><label>Turno Asignado</label><input type="text" id="turno" value="MATUTINO" class="input-locked" readonly></div>
+
+          <div class="form-group"><label>Secundaria Procedencia</label><input type="text" id="secundaria" style="text-transform: uppercase;" required></div>
+          <div class="form-group"><label>Nombre del Tutor</label><input type="text" id="tutor" style="text-transform: uppercase;" required></div>
+          <div class="form-group"><label>Teléfono (10 dígitos)</label><input type="tel" id="telefono" pattern="[0-9]{10}" required></div>
+
+          <div class="form-group"><label>Correo Electrónico</label><input type="email" id="correo" required></div>
+          <div class="form-span-2"><button type="submit" id="btnGuardarMain" class="btn-primary">💾 Generar Registro e Imprimir</button></div>
+        </div>
+      </form>
+    </div>
+
+    <div class="box">
+      <div class="box-header" style="border-bottom:none; padding-bottom:0; margin-bottom:15px;">
+        <h3>📂 Historial de Alumnos Registrados</h3>
+        <button class="btn-secondary" onclick="cargarDatosBD()" style="width:auto; margin:0; padding:8px 15px;">🔄 Recargar Hoja</button>
+      </div>
+
+      <div class="search-container">
+        <select id="searchType" onchange="toggleSearch()">
+          <option value="folio">🔍 Buscar por Folio</option>
+          <option value="fecha">📅 Buscar por Fecha</option>
+        </select>
+
+        <div class="input-group" id="groupFolio">
+          <div class="prefix-box" id="prefixText">CET53-YYYY-</div>
+          <input type="text" id="searchFolio" maxlength="4" placeholder="Ej: 0025" onkeyup="filtrarTabla()" style="width: 100px; font-family: monospace; font-size: 15px; font-weight: bold; color: var(--vino);">
+        </div>
+
+        <div class="input-group" id="groupFecha" style="display: none;">
+          <input type="date" id="searchFecha" onchange="filtrarTabla()" style="padding: 10px; font-size: 14px;">
+        </div>
+
+        <button class="btn-secondary" onclick="limpiarFiltros()" style="width:auto; margin:0; margin-left: auto; background: white; border: 1px solid var(--border);">Borrar Filtro</button>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Folio</th>
+              <th>Alumno</th>
+              <th>CURP</th>
+              <th>Turno</th>
+              <th style="text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla">
+            <tr><td colspan="5" style="text-align:center; padding: 20px;"><div class="loader"></div>Cargando base de datos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="editModal">
+  <div class="modal-content large">
+    <h3 style="color: var(--text-main); margin-bottom: 20px; font-size: 20px; text-align: left; border-bottom: 2px solid var(--border); padding-bottom: 10px;">
+      ✏️ Editar Alumno: <span id="editFolioDisplay" style="color: var(--vino);"></span>
+    </h3>
+    <form id="editForm">
+      <input type="hidden" id="editFolio">
+      <div class="form-grid">
+        <div class="form-group"><label>Nombre(s)</label><input type="text" id="e_nombre" style="text-transform: uppercase;" required></div>
+        <div class="form-group"><label>Apellidos</label><input type="text" id="e_apellidos" style="text-transform: uppercase;" required></div>
+        <div class="form-group"><label>CURP</label><input type="text" id="e_curp" maxlength="18" style="text-transform: uppercase;" required></div>
+        
+        <div class="form-group"><label>Nacimiento</label><input type="date" id="e_nacimiento" required></div>
+        <div class="form-group"><label>Fecha Emisión (Bloqueada)</label><input type="date" id="e_fechaEmision" class="input-locked" readonly></div>
+        <div class="form-group"><label>Turno</label><input type="text" id="e_turno" class="input-locked" readonly></div>
+
+        <div class="form-group"><label>Secundaria</label><input type="text" id="e_secundaria" style="text-transform: uppercase;" required></div>
+        <div class="form-group"><label>Tutor</label><input type="text" id="e_tutor" style="text-transform: uppercase;" required></div>
+        <div class="form-group"><label>Teléfono</label><input type="tel" id="e_telefono" pattern="[0-9]{10}" required></div>
+
+        <div class="form-group"><label>Correo</label><input type="email" id="e_correo" required></div>
+        
+        <div class="form-span-2" style="display: flex; gap: 10px; margin-top: 25px;">
+          <button type="submit" class="btn-primary" style="margin: 0;">💾 Guardar Cambios</button>
+          <button type="button" class="btn-secondary" style="margin: 0;" onclick="cerrarModal('editModal')">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="printArea">
+  <div class="invoice">
+    <div class="inv-header">
+      <div class="inv-logo"><h1>CETis 53</h1><p>Departamento de Servicios Escolares</p></div>
+      <div class="inv-details"><h2 class="inv-title">COMPROBANTE</h2><div class="inv-folio">FOLIO: <span id="printFolioInst"></span></div><div class="inv-date">Fecha Emisión: <span id="printFechaInst"></span></div></div>
+    </div>
+    <div class="inv-info-grid">
+      <div class="inv-box"><h4>Datos del Tutor / Responsable</h4><div class="inv-text"><strong>Nombre:</strong> <span id="printTutorInst"></span></div><div class="inv-text"><strong>Teléfono:</strong> <span id="printTelInst"></span></div><div class="inv-text"><strong>Correo:</strong> <span id="printCorreoInst"></span></div></div>
+      <div class="inv-box" style="background: #fdfafb; border-color: #f3e5e9;"><h4 style="color: var(--vino-dark);">Control Interno</h4><div class="inv-text">Copia designada exclusivamente para el resguardo en el expediente físico del plantel.</div></div>
+    </div>
+    <table class="inv-table">
+      <thead><tr><th style="width: 30%">Nombre del Alumno</th><th style="width: 18%">CURP</th><th style="width: 17%">F. Nacimiento</th><th style="width: 20%">Secundaria</th><th style="width: 15%; text-align: center;">Turno</th></tr></thead>
+      <tbody><tr><td><strong id="printNombreInst"></strong></td><td id="printCurpInst"></td><td id="printNacInst"></td><td id="printSecundariaInst"></td><td style="text-align: center;"><span class="inv-turno-badge" id="printTurnoInst"></span></td></tr></tbody>
+    </table>
+    <div class="inv-footer">
+      <div class="inv-terms"><strong>Términos:</strong> Al firmar este documento, el tutor declara bajo protesta de decir verdad que los datos son correctos. El turno queda asegurado.</div>
+      <div class="inv-sign"><br><br><div>Firma del Tutor / Padre de Familia</div></div>
+    </div>
+  </div>
+  <div class="corte-linea"></div>
+  <div class="invoice">
+    <div class="inv-header">
+      <div class="inv-logo"><h1>CETis 53</h1><p>Departamento de Servicios Escolares</p></div>
+      <div class="inv-details"><h2 class="inv-title">COMPROBANTE</h2><div class="inv-folio">FOLIO: <span id="printFolioTut"></span></div><div class="inv-date">Fecha Emisión: <span id="printFechaTut"></span></div></div>
+    </div>
+    <div class="inv-info-grid">
+      <div class="inv-box"><h4>Datos del Tutor / Responsable</h4><div class="inv-text"><strong>Nombre:</strong> <span id="printTutorTut"></span></div><div class="inv-text"><strong>Teléfono:</strong> <span id="printTelTut"></span></div><div class="inv-text"><strong>Correo:</strong> <span id="printCorreoTut"></span></div></div>
+      <div class="inv-box"><h4>Aviso Importante</h4><div class="inv-text">Conserve este comprobante. Es indispensable para cualquier aclaración respecto al registro de su hijo(a).</div></div>
+    </div>
+    <table class="inv-table">
+      <thead><tr><th style="width: 30%">Nombre del Alumno</th><th style="width: 18%">CURP</th><th style="width: 17%">F. Nacimiento</th><th style="width: 20%">Secundaria</th><th style="width: 15%; text-align: center;">Turno</th></tr></thead>
+      <tbody><tr><td><strong id="printNombreTut"></strong></td><td id="printCurpTut"></td><td id="printNacTut"></td><td id="printSecundariaTut"></td><td style="text-align: center;"><span class="inv-turno-badge" id="printTurnoTut"></span></td></tr></tbody>
+    </table>
+    <div class="inv-footer" style="justify-content: center; text-align: center; margin-top: 10px;">
+      <div style="font-size: 11px; font-weight: bold; color: var(--vino); padding: 10px; border: 1px dashed var(--vino); border-radius: 6px; width: 100%;">COPIA DEL ESTUDIANTE / TUTOR - SIN VALIDEZ SIN SELLO DE LA INSTITUCIÓN</div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="confirmModal">
+  <div class="modal-content"><h3 style="color: var(--text-main); margin-bottom: 15px; font-size: 22px; text-align:center;">Confirmación de Captura</h3><p style="margin-bottom: 25px; font-size: 15px; color: var(--text-muted); text-align:center;">Al confirmar se generará un folio oficial.</p><button class="btn-primary" onclick="guardar()" style="margin-top: 0;">Guardar y Emitir Folio</button><button class="btn-secondary" onclick="cerrarModal('confirmModal')">Revisar de nuevo</button></div>
+</div>
+<div class="modal" id="successModal">
+  <div class="modal-content"><div class="checkmark">✔️</div><h3 style="margin-bottom: 5px; font-size: 24px; text-align:center;">Registro Exitoso</h3><p style="margin-bottom: 25px; color: var(--text-muted); font-size: 15px; text-align:center;">El folio oficial asignado es: <br><strong id="folioExito" style="color: var(--vino); font-size: 28px; display: block; margin-top: 10px;"></strong></p><button class="btn-primary" onclick="imprimirComprobanteDesdeExito()" style="margin-top: 0;">🖨️ Imprimir Comprobantes</button><button class="btn-secondary" onclick="cerrarModal('successModal')">Cerrar y Limpiar</button></div>
+</div>
+<div class="toast" id="toast">Notificación</div>
+
+<script>
+// --- TU URL ACTUAL DE GOOGLE APPS SCRIPT ---
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyGYh9PlfMmPhvvxLpj28V-m9Ef39z9daUx5fxyZTG76HoGkKQ5MO6wwYbmnCNIdTWB/exec";
+
+let baseDatos = []; 
+let totalHistorico = 0, hoySesion = 0, tempData = null;
+const anioActual = new Date().getFullYear();
+const prefijoFolio = `CET53-${anioActual}-`;
+
+// --- SISTEMA DE PROTECCIÓN OFFLINE ---
+let offlineTimer;
+let offlineSeconds = 0;
+let isLoggedIn = false;
+
+window.addEventListener('offline', () => {
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('offline-screen').style.display = 'flex';
+  document.getElementById('btnGuardarMain').disabled = true; // Bloquea el botón
+  
+  offlineSeconds = 0;
+  offlineTimer = setInterval(actualizarRelojOffline, 1000);
+});
+
+window.addEventListener('online', () => {
+  clearInterval(offlineTimer);
+  document.getElementById('offline-screen').style.display = 'none';
+  document.getElementById('btnGuardarMain').disabled = false; // Desbloquea el botón
+  
+  // Regresa a donde estaba
+  if(isLoggedIn) {
+    document.getElementById('app-screen').style.display = 'grid';
+    mostrarToast("✅ Conexión restablecida.");
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+});
+
+function actualizarRelojOffline() {
+  offlineSeconds++;
+  let h = Math.floor(offlineSeconds / 3600);
+  let m = Math.floor((offlineSeconds % 3600) / 60);
+  let s = Math.floor(offlineSeconds % 60);
+  document.getElementById('off-h').innerText = h.toString().padStart(2,'0');
+  document.getElementById('off-m').innerText = m.toString().padStart(2,'0');
+  document.getElementById('off-s').innerText = s.toString().padStart(2,'0');
+}
+
+// --- INICIALIZACIÓN FECHAS ---
+function setFechaEmision() {
+  const hoyStr = new Date().toISOString().split('T')[0];
+  document.getElementById('fechaEmision').value = hoyStr;
+  document.getElementById('fechaActualDisplay').innerText = new Date().toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('prefixText').innerText = prefijoFolio;
+}
+
+// --- LOGIN ---
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if(!navigator.onLine) {
+    document.getElementById('login-error').innerText = "⚠️ No hay conexión a internet.";
+    document.getElementById('login-error').style.display = 'block';
+    return;
+  }
+
+  if(document.getElementById('user').value === 'admin' && document.getElementById('pass').value === 'cetis53') {
+    isLoggedIn = true;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'grid';
+    setFechaEmision(); 
+    cargarDatosBD(); 
+  } else {
+    document.getElementById('login-error').innerText = "⚠️ Credenciales incorrectas.";
+    document.getElementById('login-error').style.display = 'block';
+  }
+});
+function cerrarSesion() { location.reload(); }
+
+// --- FUNCIONALIDAD BUSCADOR / FILTROS ---
+function toggleSearch() {
+  const tipo = document.getElementById("searchType").value;
+  if (tipo === "folio") {
+    document.getElementById("groupFolio").style.display = "flex";
+    document.getElementById("groupFecha").style.display = "none";
+  } else {
+    document.getElementById("groupFolio").style.display = "none";
+    document.getElementById("groupFecha").style.display = "flex";
+  }
+  limpiarFiltros();
+}
+
+function limpiarFiltros() {
+  document.getElementById("searchFolio").value = "";
+  document.getElementById("searchFecha").value = "";
+  renderTabla(baseDatos); 
+}
+
+function filtrarTabla() {
+  const tipo = document.getElementById("searchType").value;
+  let dataFiltrada = [];
+
+  if (tipo === "folio") {
+    const valor = document.getElementById("searchFolio").value;
+    if(!valor) { renderTabla(baseDatos); return; }
+    const busqueda = prefijoFolio + valor;
+    dataFiltrada = baseDatos.filter(a => a.folio.includes(busqueda));
+  } else if (tipo === "fecha") {
+    const valor = document.getElementById("searchFecha").value;
+    if(!valor) { renderTabla(baseDatos); return; }
+    dataFiltrada = baseDatos.filter(a => formatFechaParaInput(a.fechaEmision) === valor);
+  }
+  renderTabla(dataFiltrada);
+}
+
+// --- CARGAR DESDE LA HOJA ---
+function cargarDatosBD() {
+  if(!navigator.onLine) { mostrarToast("Sin conexión. Imposible cargar datos."); return; }
+  
+  const tbody = document.getElementById("tabla");
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;"><div class="loader"></div>Sincronizando con base de datos...</td></tr>`;
+  
+  fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ action: "get" }) })
+  .then(r => r.json())
+  .then(data => {
+    baseDatos = data; 
+    totalHistorico = baseDatos.length;
+    document.getElementById("total").innerText = totalHistorico;
+    document.getElementById("folio").innerText = baseDatos.length > 0 ? baseDatos[0].folio : "---";
+    renderTabla(baseDatos); // Muestra absolutamente TODOS gracias al contenedor con scroll
+  }).catch(err => {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: red;">Error al cargar datos.</td></tr>`;
+  });
+}
+
+function renderTabla(datosAMostrar) {
+  const tbody = document.getElementById("tabla");
+  tbody.innerHTML = "";
+  if(datosAMostrar.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:#64748b;">No se encontraron registros.</td></tr>`;
+    return;
+  }
+  
+  datosAMostrar.forEach(alumno => {
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${alumno.folio}</strong></td>
+        <td>${alumno.nombre} ${alumno.apellidos}</td>
+        <td style="font-family: monospace; color: var(--vino); font-weight: 500;">${alumno.curp}</td>
+        <td><span class="badge-turno">${alumno.turno}</span></td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-icon btn-print" onclick="reimprimir('${alumno.folio}')" title="Reimprimir">🖨️</button>
+            <button class="btn-icon btn-edit" onclick="abrirEdicion('${alumno.folio}')" title="Editar">✏️</button>
+          </div>
+        </td>
+      </tr>`;
+  });
+}
+
+// --- CREAR NUEVO ALUMNO ---
+document.getElementById("registroForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if(!navigator.onLine) { mostrarToast("⛔ Bloqueado: No hay conexión a internet."); return; }
+  
+  tempData = {
+    apellidos: document.getElementById("apellidos").value,
+    nombre: document.getElementById("nombre").value,
+    curp: document.getElementById("curp").value.toUpperCase(),
+    nacimiento: document.getElementById("nacimiento").value, 
+    fechaEmision: document.getElementById("fechaEmision").value,
+    turno: document.getElementById("turno").value,
+    secundaria: document.getElementById("secundaria").value,
+    tutor: document.getElementById("tutor").value,
+    telefono: document.getElementById("telefono").value,
+    correo: document.getElementById("correo").value
+  };
+  document.getElementById("confirmModal").style.display = "flex";
+});
+
+function guardar() {
+  if(!navigator.onLine) { cerrarModal('confirmModal'); return; }
+  
+  cerrarModal('confirmModal');
+  mostrarToast("Guardando alumno...");
+
+  fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify({ action: "create", ...tempData }) })
+  .then(r => r.json())
+  .then(res => {
+    hoySesion++; document.getElementById("hoy").innerText = hoySesion;
+    tempData.folio = res.folio;
+    baseDatos.unshift(tempData);
+    totalHistorico++;
+    document.getElementById("total").innerText = totalHistorico;
+    document.getElementById("folio").innerText = res.folio;
+    
+    limpiarFiltros();
+    
+    document.getElementById("folioExito").innerText = res.folio;
+    document.getElementById("successModal").style.display = "flex";
+    document.getElementById("registroForm").reset();
+    setFechaEmision();
+  }).catch(err => mostrarToast("Error de conexión."));
+}
+
+// --- EDITAR ALUMNO ---
+function formatFechaParaInput(fechaStr) {
+  if(!fechaStr || fechaStr === "N/A" || fechaStr === "SIN DATO") return "";
+  try { return new Date(fechaStr).toISOString().split('T')[0]; } 
+  catch(e) { return fechaStr.substring(0,10); } 
+}
+
+function abrirEdicion(folio) {
+  if(!navigator.onLine) { mostrarToast("Sin conexión. Modo edición bloqueado."); return; }
+  
+  const alumno = baseDatos.find(a => a.folio === folio);
+  if(!alumno) return;
+  
+  document.getElementById("editFolioDisplay").innerText = folio;
+  document.getElementById("editFolio").value = folio;
+  document.getElementById("e_nombre").value = alumno.nombre;
+  document.getElementById("e_apellidos").value = alumno.apellidos;
+  document.getElementById("e_curp").value = alumno.curp;
+  document.getElementById("e_nacimiento").value = formatFechaParaInput(alumno.nacimiento);
+  document.getElementById("e_fechaEmision").value = formatFechaParaInput(alumno.fechaEmision);
+  document.getElementById("e_turno").value = alumno.turno;
+  document.getElementById("e_secundaria").value = alumno.secundaria;
+  document.getElementById("e_tutor").value = alumno.tutor;
+  document.getElementById("e_telefono").value = alumno.telefono;
+  document.getElementById("e_correo").value = alumno.correo;
+  
+  document.getElementById("editModal").style.display = "flex";
+}
+
+document.getElementById("editForm").addEventListener("submit", e => {
+  e.preventDefault();
+  if(!navigator.onLine) { return; }
+  mostrarToast("Actualizando base de datos...");
+  cerrarModal("editModal");
+
+  const editData = {
+    action: "edit",
+    folio: document.getElementById("editFolio").value,
+    apellidos: document.getElementById("e_apellidos").value,
+    nombre: document.getElementById("e_nombre").value,
+    curp: document.getElementById("e_curp").value,
+    nacimiento: document.getElementById("e_nacimiento").value,
+    fechaEmision: document.getElementById("e_fechaEmision").value,
+    turno: document.getElementById("e_turno").value,
+    secundaria: document.getElementById("e_secundaria").value,
+    tutor: document.getElementById("e_tutor").value,
+    telefono: document.getElementById("e_telefono").value,
+    correo: document.getElementById("e_correo").value
+  };
+
+  fetch(URL_SCRIPT, { method: "POST", body: JSON.stringify(editData) })
+  .then(r => r.json())
+  .then(res => {
+    const index = baseDatos.findIndex(a => a.folio === editData.folio);
+    if(index !== -1) baseDatos[index] = editData;
+    filtrarTabla(); 
+    mostrarToast("✅ Datos actualizados exitosamente.");
+  }).catch(err => mostrarToast("Error al actualizar."));
+});
+
+// --- REIMPRESIÓN ---
+function reimprimir(folio) {
+  const alumno = baseDatos.find(a => a.folio === folio);
+  if(alumno) { prepararComprobante(alumno); window.print(); }
+}
+
+function imprimirComprobanteDesdeExito() {
+  prepararComprobante(tempData); window.print();
+}
+
+function prepararComprobante(dataAlumno) {
+  const nombreCompleto = `${dataAlumno.nombre} ${dataAlumno.apellidos}`;
+  const dateFix = (str) => {
+    try { return new Date(str + 'T00:00:00').toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }); }
+    catch(e) { return str; }
+  };
+  const fechaPrint = dateFix(formatFechaParaInput(dataAlumno.fechaEmision));
+  const nacPrint = dateFix(formatFechaParaInput(dataAlumno.nacimiento));
+
+  ["Inst", "Tut"].forEach(sufijo => {
+    document.getElementById(`printFolio${sufijo}`).innerText = dataAlumno.folio;
+    document.getElementById(`printFecha${sufijo}`).innerText = fechaPrint;
+    document.getElementById(`printTutor${sufijo}`).innerText = dataAlumno.tutor;
+    document.getElementById(`printTel${sufijo}`).innerText = dataAlumno.telefono;
+    document.getElementById(`printCorreo${sufijo}`).innerText = dataAlumno.correo;
+    document.getElementById(`printNombre${sufijo}`).innerText = nombreCompleto;
+    document.getElementById(`printCurp${sufijo}`).innerText = dataAlumno.curp;
+    document.getElementById(`printNac${sufijo}`).innerText = nacPrint;
+    document.getElementById(`printSecundaria${sufijo}`).innerText = dataAlumno.secundaria;
+    document.getElementById(`printTurno${sufijo}`).innerText = dataAlumno.turno;
+  });
+}
+
+function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
+function mostrarToast(mensaje) {
+  const t = document.getElementById("toast");
+  t.innerText = mensaje; t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 3000);
+}
+</script>
+</body>
+</html>
