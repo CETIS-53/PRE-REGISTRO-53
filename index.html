@@ -74,7 +74,6 @@
     .light-2 { bottom: -10%; right: 10%; width: 35vw; height: 35vw; background: #2a0845; animation: float 15s infinite alternate-reverse; }
     @keyframes float { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-50px) scale(1.1); } }
 
-    /* CONTENEDOR PRINCIPAL */
     .app-container {
       width: 100%; 
       max-width: var(--max-width-student);
@@ -86,7 +85,6 @@
       transition: max-width 0.4s ease;
     }
 
-    /* ADMIN: CAJA */
     .app-container.admin { 
       max-width: var(--max-width-admin); 
       height: 95vh; 
@@ -131,28 +129,29 @@
     .row { display:flex; gap:20px; }
     .row .input-group { flex:1; margin-bottom: 15px;}
 
-    .file-upload-wrapper { border: 2px dashed var(--borde); border-radius: 20px; padding: 45px 20px; text-align: center; background: rgba(139, 17, 43, 0.05); cursor: pointer; transition: var(--transicion); margin-bottom: 25px; position:relative; }
+    /* =======================================
+       ZONA DE SUBIDA CORREGIDA PARA MÓVILES
+       ======================================= */
+    .file-upload-wrapper { 
+      border: 2px dashed var(--borde); 
+      border-radius: 20px; 
+      background: rgba(139, 17, 43, 0.05); 
+      transition: var(--transicion); 
+      margin-bottom: 25px; 
+      position: relative; 
+      overflow: hidden; /* Asegura que el botón ocupe toda la caja */
+    }
     .file-upload-wrapper:hover, .file-upload-wrapper.has-file { background: rgba(255, 42, 95, 0.1); border-color: var(--vino-neón); box-shadow: inset 0 0 30px rgba(255, 42, 95, 0.15); }
     .file-upload-wrapper.has-file { border-color: var(--exito-neón); box-shadow: inset 0 0 30px rgba(16, 185, 129, 0.15); background: rgba(16, 185, 129, 0.05);}
     .file-upload-wrapper i { display:block; font-size:50px; color:var(--vino-neón); margin-bottom:12px; transition: var(--transicion); filter: drop-shadow(0 0 10px var(--vino-glow)); }
     .file-upload-wrapper.has-file i { color: var(--exito-neón); filter: drop-shadow(0 0 10px var(--exito-glow)); }
-    .file-upload-wrapper:hover i { transform: scale(1.15); }
-    .file-upload-wrapper span { font-weight:500; color:var(--texto); display:block; font-size: 15px; letter-spacing: 0.5px;}
     
-    /* CORRECCIÓN PARA CELULARES: z-index alto para evitar doble clic */
-    .file-upload-wrapper input[type="file"] { position:absolute; left:0; top:0; width:100%; height:100%; opacity:0; cursor:pointer; z-index: 100; }
-
-    /* FICHA DE CONFIRMACIÓN */
+    /* El input invisible real, estándar W3C para móviles */
+    .file-input-hidden { width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1; }
+    
     .summary-card {
-      background: rgba(0,0,0,0.4);
-      border: 1px solid var(--borde);
-      border-radius: 16px;
-      padding: 25px;
-      margin-bottom: 25px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.4); border: 1px solid var(--borde); border-radius: 16px; padding: 25px; margin-bottom: 25px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 15px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
     }
     .summary-item { display: flex; flex-direction: column; text-align: left;}
     .summary-item.full { grid-column: span 2; }
@@ -170,31 +169,22 @@
     .footer-links button { background:none; border:none; color:var(--texto-claro); font-size:13px; font-weight: 500; cursor:pointer; transition: var(--transicion); letter-spacing: 0.5px;}
     .footer-links button:hover { color: var(--vino-neón); text-shadow: 0 0 10px var(--vino-glow); }
 
-    /* ===========================
-       VISTA ADMIN - CARDS PEQUEÑAS
-       =========================== */
     .admin-container { display: flex; flex-direction: column; height: 100%; }
     .admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--borde); gap: 15px; flex-wrap: wrap; flex-shrink: 0;}
     .controls { display:flex; align-items:center; gap:12px; background: rgba(0,0,0,0.5); padding: 12px 16px; border-radius: 14px; border: 1px solid var(--borde); flex-wrap: wrap; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);}
-    
     .admin-select { background: rgba(15, 20, 30, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 8px 14px; border-radius: 10px; font-family: 'Poppins'; font-size: 13px; outline: none; cursor: pointer; transition: var(--transicion);}
     .admin-select:hover, .admin-select:focus { border-color: var(--vino-neón); box-shadow: 0 0 15px rgba(255, 42, 95, 0.2);}
-    
     .btn-admin-action { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 500; transition: var(--transicion); display: flex; align-items: center; gap: 8px;}
     .btn-admin-action:hover { background: var(--vino-neón); border-color: var(--vino-neón); box-shadow: 0 0 15px var(--vino-glow); transform: translateY(-2px);}
     .btn-admin-action.success:hover { background: var(--exito-neón); border-color: var(--exito-neón); box-shadow: 0 0 15px var(--exito-glow); }
-
     .controls input[type=range] { width:100px; height:5px; border-radius:999px; appearance:none; background: rgba(255,255,255,0.1); outline:none; }
     .controls input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background: var(--vino-neón); cursor:pointer; box-shadow: 0 0 12px var(--vino-glow); transition: transform 0.2s;}
-    .controls input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
     .gallery-container-scroll { flex: 1; overflow-y: auto; padding-right: 15px; padding-bottom: 20px; }
-    
     .gallery-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--gallery-gap); align-items: stretch;} 
     
     .photo-card { background: rgba(20, 25, 35, 0.6); border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; transition: var(--transicion); display: flex; flex-direction: column; box-shadow: 0 8px 25px rgba(0,0,0,0.5);}
     .photo-card:hover { transform: translateY(-5px); border-color: var(--vino-neón); box-shadow: 0 15px 30px rgba(255, 42, 95, 0.25); }
-    
     .photo-img-container { height: 180px; background: #000; position:relative; overflow:hidden; cursor:pointer;} 
     .photo-img { width:100%; height:100%; object-fit:cover; opacity: 0.85; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
     .photo-card:hover .photo-img { transform: scale(1.08); opacity: 0.5; }
@@ -205,7 +195,7 @@
     .btn-action { width:100%; padding:10px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:#fff; font-weight: 500; cursor:pointer; transition:var(--transicion); font-size: 13px; display:flex; align-items:center; justify-content:center; gap:8px;}
     .btn-action:hover { border-color: var(--vino-neón); color: #fff; background: var(--vino-neón); box-shadow: 0 0 15px var(--vino-glow);}
 
-    .lightbox { position: fixed; inset: 0; display: none; align-items:center; justify-content:center; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index:9999; padding: 20px; }
+    .lightbox { position: fixed; inset: 0; display: none; align-items:center; justify-content:center; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(20px); z-index:9999; padding: 20px; }
     .lightbox.active { display:flex; animation: lbIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
     @keyframes lbIn { from { opacity:0; transform: scale(0.9) } to { opacity:1; transform: scale(1) } }
     .lightbox-content { position: relative; max-width: 100%; max-height: 100%; display:flex; flex-direction:column; align-items:center; gap:15px; }
@@ -226,44 +216,22 @@
       .controls { justify-content: center; }
       .row { flex-direction: column; gap: 0; }
       .header h1 { font-size: 26px; }
-      .file-upload-wrapper { padding: 30px 15px; }
       .summary-card { grid-template-columns: 1fr; padding: 15px; gap: 10px;}
       .summary-item.full { grid-column: span 1; }
       .btn-group { flex-direction: column; gap: 10px; }
       .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); } 
     }
 
-    /* ===========================
-       ESTILOS EXCLUSIVOS PARA IMPRESIÓN (PDF DE FINALISTAS)
-       =========================== */
     #printArea { display: none; }
-    
     @media print {
       body * { visibility: hidden; }
       html, body { background: #ffffff !important; display: block; padding: 0; margin: 0; height: auto; }
-      
       #printArea { display: block; position: absolute; left: 0; top: 0; width: 100%; }
       #printArea * { visibility: visible; }
-      
-      .print-page { 
-        page-break-after: always; 
-        text-align: center; 
-        padding: 40px; 
-        font-family: 'Poppins', sans-serif;
-        color: #000;
-        box-sizing: border-box;
-      }
+      .print-page { page-break-after: always; text-align: center; padding: 40px; font-family: 'Poppins', sans-serif; color: #000; box-sizing: border-box;}
       .print-page h2 { font-size: 28px; margin-bottom: 20px; color: #8b112b; text-transform: uppercase; letter-spacing: 2px;}
       .print-page img { max-width: 100%; max-height: 60vh; object-fit: contain; margin-bottom: 30px; border: 3px solid #ddd; border-radius: 8px; }
-      
-      .print-datos { 
-        text-align: left; 
-        max-width: 600px; 
-        margin: 0 auto; 
-        border-top: 3px solid #8b112b; 
-        padding-top: 25px; 
-        background: #fff;
-      }
+      .print-datos { text-align: left; max-width: 600px; margin: 0 auto; border-top: 3px solid #8b112b; padding-top: 25px; background: #fff;}
       .print-datos p { font-size: 18px; margin-bottom: 12px; }
       .print-datos strong { color: #8b112b; }
     }
@@ -353,11 +321,14 @@
           <i class="fas fa-check-circle check-icon"></i>
         </div>
 
-        <div class="file-upload-wrapper step2-input" id="uploadWrapper">
-          <i class="fas fa-cloud-upload-alt" id="uploadIcon"></i>
-          <span id="fileName">Arrastra tu fotografía o toca aquí</span>
-          <p style="margin-top:8px; font-size:13px; color:var(--texto-claro); font-weight: 300;">Tamaño máximo 3 MB (Nota: Si tu celular saca fotos más pesadas, deberás comprimirla)</p>
-          <input type="file" id="foto" accept="image/*" onchange="updateFileName()" />
+        <div class="file-upload-wrapper step2-input" id="uploadWrapper" style="padding:0;">
+          <input type="file" id="foto" accept="image/*" onchange="updateFileName()" class="file-input-hidden" />
+          
+          <label for="foto" style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; padding: 40px 20px; cursor:pointer; margin:0;">
+            <i class="fas fa-cloud-upload-alt" id="uploadIcon" style="margin-bottom:15px;"></i>
+            <span id="fileName" style="text-align:center; font-size:16px;">Toca aquí para abrir Cámara o Galería</span>
+            <p style="margin-top:10px; font-size:13px; color:var(--texto-claro); font-weight: 300; text-align:center;">Cualquier tamaño es aceptado (¡Nosotros la optimizamos!)</p>
+          </label>
         </div>
 
         <div class="btn-group" style="flex-direction: row;">
@@ -458,15 +429,12 @@ function getPdfTemplate(numControl, nombre, correo, grupo, especialidad, titulo,
     return `
     <div style="padding: 30px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; background: #fff;">
         <div style="border: 3px solid #8b112b; padding: 40px; border-radius: 12px; position: relative; overflow: hidden;">
-            
             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.04; font-size: 250px; color: #8b112b; z-index: 1;"><i class="fas fa-camera-retro"></i></div>
-            
             <div style="text-align: center; border-bottom: 2px solid #eee; padding-bottom: 25px; margin-bottom: 35px; position: relative; z-index: 2;">
                 <div style="font-size: 40px; color: #8b112b; margin-bottom: 10px;"><i class="fas fa-camera-retro"></i></div>
                 <h1 style="color: #8b112b; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 3px;">CETis 53</h1>
                 <h2 style="margin: 8px 0 0 0; color: #666; font-size: 16px; font-weight: 400; letter-spacing: 1px;">COMPROBANTE OFICIAL DE REGISTRO</h2>
             </div>
-            
             <table style="width: 100%; border-collapse: collapse; position: relative; z-index: 2; font-size: 15px;">
                 <tr><td style="padding: 14px 0; border-bottom: 1px solid #eee; width: 35%; color: #888; font-weight: 600; text-transform: uppercase; font-size: 12px;">Número de Control</td><td style="padding: 14px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #222;">${escapeHtml(numControl)}</td></tr>
                 <tr><td style="padding: 14px 0; border-bottom: 1px solid #eee; color: #888; font-weight: 600; text-transform: uppercase; font-size: 12px;">Nombre del Alumno</td><td style="padding: 14px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #222;">${escapeHtml(nombre)}</td></tr>
@@ -475,15 +443,11 @@ function getPdfTemplate(numControl, nombre, correo, grupo, especialidad, titulo,
                 <tr><td style="padding: 14px 0; border-bottom: 1px solid #eee; color: #888; font-weight: 600; text-transform: uppercase; font-size: 12px;">Título Fotografía</td><td style="padding: 14px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #8b112b;">"${escapeHtml(titulo)}"</td></tr>
                 <tr><td style="padding: 14px 0; border-bottom: 1px solid #eee; color: #888; font-weight: 600; text-transform: uppercase; font-size: 12px;">Referencia</td><td style="padding: 14px 0; border-bottom: 1px solid #eee; font-weight: bold; color: #222;">${escapeHtml(nombreArchivo)}</td></tr>
             </table>
-
             <div style="margin-top: 40px; padding: 20px; background: #fdf2f4; border-left: 4px solid #8b112b; position: relative; z-index: 2; border-radius: 4px;">
                 <p style="margin: 0; color: #555; font-size: 13px; line-height: 1.6;">Este documento electrónico avala de forma oficial la recepción de tu fotografía. Tu participación está sujeta a los lineamientos del concurso.</p>
                 <p style="margin: 10px 0 0 0; font-weight: bold; color: #8b112b; font-size:14px;"><i class="fab fa-instagram"></i> Síguenos en Instagram: @cetis53_oficial_cdmx</p>
             </div>
-            
-            <div style="text-align: center; margin-top: 40px; font-size: 11px; color: #aaa; position: relative; z-index: 2;">
-                Ficha generada automáticamente — Sistema de Registro Concurso CETis 53
-            </div>
+            <div style="text-align: center; margin-top: 40px; font-size: 11px; color: #aaa; position: relative; z-index: 2;">Ficha generada automáticamente — Sistema de Registro Concurso CETis 53</div>
         </div>
     </div>
     `;
@@ -495,7 +459,7 @@ function getPdfTemplate(numControl, nombre, correo, grupo, especialidad, titulo,
 document.addEventListener('DOMContentLoaded', () => {
   Swal.fire({
     title: '¡Aviso Importante!',
-    text: 'Recuerda que solo se aceptará UN registro por número de control. Es indispensable que verifiques todos tus datos antes de enviar tu participación oficial.',
+    text: 'Recuerda que solo se aceptará UN registro por número de control. Verifica todos tus datos y sube la mejor fotografía que tengas.',
     icon: 'info',
     confirmButtonColor: '#ff2a5f',
     confirmButtonText: 'Entendido, comenzar',
@@ -596,7 +560,8 @@ function nextStep(step) {
     const titulo = document.getElementById('titulo').value.trim();
     const file = document.getElementById('foto').files[0];
     if (!titulo || !file) return Swal.fire({ icon: 'warning', title: 'Falta la fotografía', text: 'Sube tu imagen y ponle un título.', confirmButtonColor: '#ff2a5f' });
-    if (file.size > 3 * 1024 * 1024) return Swal.fire({ icon: 'error', title: 'Archivo muy pesado', text: 'Tu foto supera los 3 MB permitidos. Por favor comprímela o elige otra.', confirmButtonColor: '#ff2a5f' });
+    
+    // Ya no bloqueamos por límite de 3MB aquí, porque se comprimirá automáticamente al enviar.
 
     generarFichaResumen(); 
     document.getElementById('step2').classList.remove('active');
@@ -628,31 +593,59 @@ function updateFileName() {
   const input = document.getElementById('foto');
   const fileNameSpan = document.getElementById('fileName');
   const wrapper = document.getElementById('uploadWrapper');
-  if (input.files.length > 0) {
-    fileNameSpan.textContent = input.files[0].name;
+  if (input.files && input.files.length > 0) {
+    fileNameSpan.innerHTML = `<strong>¡Foto lista!</strong><br>${input.files[0].name}`;
     wrapper.classList.add('has-file');
     updateStep2Progress();
   } else {
-    fileNameSpan.textContent = 'Arrastra tu fotografía o toca aquí';
+    fileNameSpan.textContent = 'Toca aquí para abrir Cámara o Galería';
     wrapper.classList.remove('has-file');
     updateStep2Progress();
   }
 }
 
 /* =========================================================================
-   4. SUBIDA Y GENERACIÓN DEL PDF PARA EL ESTUDIANTE AL FINALIZAR
+   4. SUBIDA INTELIGENTE: COMPRESIÓN AUTOMÁTICA EN MÓVILES Y PDF FINAL
    ========================================================================= */
 document.getElementById('concursoForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const file = document.getElementById('foto').files[0];
   if (!file) return showError('Falta archivo', 'Por favor selecciona una foto.');
 
-  Swal.fire({ title: 'Registrando participación...', html: 'No cierres esta ventana, este proceso puede tardar unos segundos.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+  Swal.fire({ title: 'Optimizando y subiendo...', html: 'No cierres esta ventana, este proceso puede tardar un poco dependiendo de tu internet.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    const base64String = event.target.result.split(',')[1];
+  // FUNCIÓN INTERNA: Comprime la foto si es de celular para que nunca falle por pesada
+  const comprimirYEnviar = (fileObj) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileObj);
+    reader.onload = function(event) {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const MAX_DIMENSION = 1600; // Mantiene calidad excelente (HD) pero pesa menos de 1 MB
+        let width = img.width;
+        let height = img.height;
 
+        if (width > height) {
+          if (width > MAX_DIMENSION) { height *= MAX_DIMENSION / width; width = MAX_DIMENSION; }
+        } else {
+          if (height > MAX_DIMENSION) { width *= MAX_DIMENSION / height; height = MAX_DIMENSION; }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Convertir la imagen comprimida a Base64
+        const base64String = canvas.toDataURL('image/jpeg', 0.85).split(',')[1];
+        enviarAlServidor(base64String, 'image/jpeg', fileObj.name);
+      };
+    };
+  };
+
+  // FUNCIÓN INTERNA: Envía los datos finales al Google Script
+  const enviarAlServidor = (base64Data, mime, filename) => {
     const payload = {
       action: "upload",
       numeroControl: document.getElementById('numeroControl').value.trim(),
@@ -661,9 +654,9 @@ document.getElementById('concursoForm').addEventListener('submit', function(e) {
       grupo: document.getElementById('grupo').value.trim(),
       especialidad: document.getElementById('especialidad').value.trim(),
       titulo: document.getElementById('titulo').value.trim(),
-      fileBase64: base64String,
-      mimeType: file.type,
-      fileName: file.name
+      fileBase64: base64Data,
+      mimeType: mime,
+      fileName: filename
     };
 
     jsonFetch(SCRIPT_URL, {
@@ -673,16 +666,11 @@ document.getElementById('concursoForm').addEventListener('submit', function(e) {
     }).then(data => {
       if (data.status === "success") {
         
+        // Crear PDF en memoria y forzar descarga
         const divPdf = document.createElement('div');
-        divPdf.innerHTML = getPdfTemplate(payload.numeroControl, payload.nombre, payload.correo, payload.grupo, payload.especialidad, payload.titulo, file.name);
+        divPdf.innerHTML = getPdfTemplate(payload.numeroControl, payload.nombre, payload.correo, payload.grupo, payload.especialidad, payload.titulo, filename);
         
-        const opt = {
-          margin:       0,
-          filename:     `Ficha_Registro_${payload.numeroControl}.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2 },
-          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
+        const opt = { margin: 0, filename: `Ficha_Registro_${payload.numeroControl}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
 
         html2pdf().set(opt).from(divPdf).save().then(() => {
             Swal.fire({ 
@@ -697,15 +685,11 @@ document.getElementById('concursoForm').addEventListener('submit', function(e) {
                     Hola, soy ${escapeHtml(payload.nombre)} con Número de Control: ${escapeHtml(payload.numeroControl)}. Acabo de registrar mi foto.
                   </div>
                 </div>
-                
                 <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
                   <a href="https://www.instagram.com/cetis53_oficial_cdmx/" target="_blank" style="width:100%; padding:14px 20px; background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:white; border-radius:12px; text-decoration:none; font-weight:600; box-shadow: 0 4px 15px rgba(220, 39, 67, 0.4);"><i class="fab fa-instagram" style="font-size:18px;"></i> Ir a Instagram para enviar mensaje</a>
                 </div>
               `,
-              showConfirmButton: true,
-              confirmButtonColor: '#10b981',
-              confirmButtonText: 'Ya copié mis datos, Finalizar',
-              allowOutsideClick: false
+              showConfirmButton: true, confirmButtonColor: '#10b981', confirmButtonText: 'Ya copié mis datos, Finalizar', allowOutsideClick: false
             }).then(() => location.reload());
         });
 
@@ -713,10 +697,17 @@ document.getElementById('concursoForm').addEventListener('submit', function(e) {
         Swal.fire('Atención', data.message || 'Ocurrió un error inesperado', 'error');
       }
     }).catch(error => {
-      showError('Error', 'Fallo de conexión al subir la imagen. Verifica tu red.');
+      showError('Error de conexión', 'Fallo de red al intentar subir la imagen. Intenta de nuevo.');
     });
   };
-  reader.readAsDataURL(file);
+
+  // Si es una imagen, la pasamos por el compresor (soluciona el error de límite de memoria en móviles)
+  if(file.type.startsWith('image/')) {
+    comprimirYEnviar(file);
+  } else {
+    showError('Archivo inválido', 'Por favor selecciona únicamente una imagen (JPG, PNG).');
+  }
+
 });
 
 /* =========================================================================
@@ -730,15 +721,8 @@ function solicitarLogin() {
   const toHex = (str) => Array.from(str).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
 
   Swal.fire({
-    title: 'Acceso Oficial', 
-    input: 'password', 
-    inputPlaceholder: 'Ingresa la contraseña', 
-    showCancelButton: true, 
-    confirmButtonColor: '#ff2a5f', 
-    cancelButtonText: 'Cancelar',
-    preConfirm: (password) => { 
-      if (toHex(password) !== SECRET_HEX) Swal.showValidationMessage('Contraseña incorrecta'); 
-    }
+    title: 'Acceso Oficial', input: 'password', inputPlaceholder: 'Ingresa la contraseña', showCancelButton: true, confirmButtonColor: '#ff2a5f', cancelButtonText: 'Cancelar',
+    preConfirm: (password) => { if (toHex(password) !== SECRET_HEX) Swal.showValidationMessage('Contraseña incorrecta'); }
   }).then((result) => {
     if (result.isConfirmed) {
       cambiarVista('adminView');
@@ -897,7 +881,6 @@ document.getElementById('printBtn').addEventListener('click', () => {
   const printArea = document.getElementById('printArea');
   printArea.innerHTML = ''; 
 
-  // Construir una página de impresión por cada finalista
   finalistas.forEach((item) => {
     let fixedUrl = item.url || '';
     const driveMatch = fixedUrl.match(/id=([a-zA-Z0-9_-]+)/);
@@ -917,7 +900,6 @@ document.getElementById('printBtn').addEventListener('click', () => {
     printArea.appendChild(page);
   });
 
-  // Retraso para que las imágenes se carguen antes de imprimir
   Swal.fire({ title: 'Preparando documento...', timer: 1000, didOpen: () => { Swal.showLoading(); } }).then(() => {
     window.print();
   });
