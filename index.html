@@ -129,9 +129,6 @@
     .row { display:flex; gap:20px; }
     .row .input-group { flex:1; margin-bottom: 15px;}
 
-    /* =======================================
-       ZONA DE SUBIDA 100% NATIVA Y A PRUEBA DE FALLOS
-       ======================================= */
     .file-upload-wrapper { 
       position: relative; 
       overflow: hidden; 
@@ -139,39 +136,13 @@
       border-radius: 20px; 
       background: rgba(139, 17, 43, 0.05); 
       transition: var(--transicion); 
-      margin-bottom: 25px; 
     }
     
-    /* El input abarca TODO el div, es transparente, y está HASTA ARRIBA. 
-       El celular lo detectará siempre al 100%. */
-    .file-upload-wrapper input[type="file"] { 
-      position: absolute; 
-      left: 0; 
-      top: 0; 
-      width: 100%; 
-      height: 100%; 
-      opacity: 0; 
-      cursor: pointer; 
-      z-index: 50; 
-    }
-    
-    /* El texto queda debajo del input y desactiva clicks para evitar bucles */
-    .file-upload-wrapper .upload-content { 
-      padding: 45px 20px; 
-      text-align: center; 
-      pointer-events: none; 
-      position: relative; 
-      z-index: 1; 
-    }
-
-    .file-upload-wrapper:hover, .file-upload-wrapper.has-file { background: rgba(255, 42, 95, 0.1); border-color: var(--vino-neón); box-shadow: inset 0 0 30px rgba(255, 42, 95, 0.15); }
     .file-upload-wrapper.has-file { border-color: var(--exito-neón); box-shadow: inset 0 0 30px rgba(16, 185, 129, 0.15); background: rgba(16, 185, 129, 0.05);}
     .file-upload-wrapper i { display:block; font-size:50px; color:var(--vino-neón); margin-bottom:12px; transition: var(--transicion); filter: drop-shadow(0 0 10px var(--vino-glow)); }
     .file-upload-wrapper.has-file i { color: var(--exito-neón); filter: drop-shadow(0 0 10px var(--exito-glow)); }
     .file-upload-wrapper span { font-weight:500; color:var(--texto); display:block; font-size: 15px; letter-spacing: 0.5px;}
     
-
-    /* FICHA DE CONFIRMACIÓN */
     .summary-card {
       background: rgba(0,0,0,0.4); border: 1px solid var(--borde); border-radius: 16px; padding: 25px; margin-bottom: 25px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 15px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
@@ -182,7 +153,7 @@
     .summary-value { font-size: 14px; font-weight: 500; color: #fff; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); word-break: break-word;}
 
     .btn-group { display:flex; gap:15px; margin-top:30px; }
-    button.btn { padding: 16px 24px; border-radius: 14px; font-weight: 600; font-size: 15px; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: var(--transicion); flex: 1; letter-spacing: 0.5px; position: relative;}
+    button.btn, label.btn { padding: 16px 24px; border-radius: 14px; font-weight: 600; font-size: 15px; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: var(--transicion); flex: 1; letter-spacing: 0.5px; position: relative; text-decoration: none;}
     .btn-prev { background: rgba(255,255,255,0.05); color: var(--texto); border-color: rgba(255,255,255,0.2); }
     .btn-next, .btn-submit { background: linear-gradient(135deg, var(--vino), var(--vino-neón)); color: #fff; box-shadow: 0 10px 25px rgba(255, 42, 95, 0.3); border: none;}
     .btn-prev:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4);}
@@ -192,9 +163,7 @@
     .footer-links button { background:none; border:none; color:var(--texto-claro); font-size:13px; font-weight: 500; cursor:pointer; transition: var(--transicion); letter-spacing: 0.5px;}
     .footer-links button:hover { color: var(--vino-neón); text-shadow: 0 0 10px var(--vino-glow); }
 
-    /* ===========================
-       VISTA ADMIN - CARDS PEQUEÑAS
-       =========================== */
+    /* VISTA ADMIN ESTILOS */
     .admin-container { display: flex; flex-direction: column; height: 100%; }
     .admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--borde); gap: 15px; flex-wrap: wrap; flex-shrink: 0;}
     .controls { display:flex; align-items:center; gap:12px; background: rgba(0,0,0,0.5); padding: 12px 16px; border-radius: 14px; border: 1px solid var(--borde); flex-wrap: wrap; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);}
@@ -350,15 +319,24 @@
           <i class="fas fa-check-circle check-icon"></i>
         </div>
 
-        <div class="file-upload-wrapper step2-input" id="uploadWrapper">
-          <input type="file" id="foto" accept="image/*" onchange="updateFileName()" />
-          <div class="upload-content">
-            <i class="fas fa-cloud-upload-alt" id="uploadIcon"></i>
-            <span id="fileName">Toca aquí para seleccionar tu fotografía</span>
-            <p style="margin-top:10px; font-size:12px; color:var(--texto-claro); font-weight: 300;">
-              Se acepta cualquier tamaño. <br>
-              <strong style="color:#ff2a5f;">Nota:</strong> Si tu celular reinicia la página al abrir la cámara, por favor toma la foto antes y elígela desde tu galería.
-            </p>
+        <div style="margin-bottom: 25px;">
+          <label style="display:block; font-size:13px; margin-bottom:12px; color:var(--texto-claro); font-weight:600; text-transform: uppercase; letter-spacing: 1px;">Sube tu fotografía</label>
+          
+          <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+            <label for="foto-camara" class="btn" style="flex: 1; background: rgba(255,42,95,0.15); color: var(--vino-neón); border: 1px solid var(--vino-neón); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; font-size: 14px;">
+              <i class="fas fa-camera"></i> Tomar Foto
+            </label>
+            <input type="file" id="foto-camara" accept="image/*" capture="environment" onchange="procesarArchivo(this)" style="width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;" />
+
+            <label for="foto-galeria" class="btn" style="flex: 1; background: rgba(16,185,129,0.15); color: var(--exito-neón); border: 1px solid var(--exito-neón); padding: 12px; border-radius: 12px; text-align: center; cursor: pointer; font-size: 14px;">
+              <i class="fas fa-images"></i> De Galería
+            </label>
+            <input type="file" id="foto-galeria" accept="image/*" onchange="procesarArchivo(this)" style="width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;" />
+          </div>
+
+          <div class="file-upload-wrapper step2-input" id="uploadWrapper" style="padding: 20px; text-align: center; pointer-events: none;">
+            <i class="fas fa-cloud-upload-alt" id="uploadIcon" style="font-size: 30px; margin-bottom: 10px;"></i>
+            <span id="fileName" style="font-size: 14px;">Aún no has seleccionado ninguna imagen</span>
           </div>
         </div>
 
@@ -372,7 +350,7 @@
         <div style="text-align:center;padding:10px 0;">
           <i class="fas fa-clipboard-check" style="font-size:48px;color:var(--exito-neón);margin-bottom:10px;filter:drop-shadow(0 0 15px var(--exito-glow))"></i>
           <h3 style="color:var(--texto);margin-bottom:8px;font-size:24px;font-weight:700">Verifica tu Participación</h3>
-          <p style="color:var(--texto-claro);font-size:14px;margin-bottom:20px; font-weight: 300;">Revisa que tus datos sean correctos. Al enviar, <strong>se descargará un comprobante PDF automáticamente en tu dispositivo</strong>. Guárdalo bien y mantente atento a nuestra página oficial de Instagram.</p>
+          <p style="color:var(--texto-claro);font-size:14px;margin-bottom:20px; font-weight: 300;">Revisa que tus datos sean correctos. Al enviar, <strong>se descargará un comprobante PDF automáticamente en tu dispositivo</strong>.</p>
         </div>
 
         <div class="summary-card" id="summaryCard"></div>
@@ -398,7 +376,7 @@
           </div>
           <div>
             <div style="font-size:22px;font-weight:700;color:var(--texto);letter-spacing:-0.5px">Panel de Selección Oficial</div>
-            <div style="font-size:13px;color:var(--texto-claro); margin-top: 4px;">Gestiona, revisa fichas y exporta a los finalistas del concurso.</div>
+            <div style="font-size:13px;color:var(--texto-claro); margin-top: 4px;">Gestiona, revisa fichas y exporta a los finalistas.</div>
           </div>
         </div>
 
@@ -454,7 +432,7 @@
 
 <script>
 /* =========================================================================
-   1. FUNCIONES AUXILIARES PARA EL PDF OFICIAL (DEL ESTUDIANTE)
+   1. FUNCIONES AUXILIARES PARA EL PDF
    ========================================================================= */
 function getPdfTemplate(numControl, nombre, correo, grupo, especialidad, titulo, nombreArchivo) {
     return `
@@ -478,7 +456,6 @@ function getPdfTemplate(numControl, nombre, correo, grupo, especialidad, titulo,
                 <p style="margin: 0; color: #555; font-size: 13px; line-height: 1.6;">Este documento electrónico avala de forma oficial la recepción de tu fotografía. Tu participación está sujeta a los lineamientos del concurso.</p>
                 <p style="margin: 10px 0 0 0; font-weight: bold; color: #8b112b; font-size:14px;"><i class="fab fa-instagram"></i> Síguenos en Instagram: @cetis53_oficial_cdmx</p>
             </div>
-            <div style="text-align: center; margin-top: 40px; font-size: 11px; color: #aaa; position: relative; z-index: 2;">Ficha generada automáticamente — Sistema de Registro Concurso CETis 53</div>
         </div>
     </div>
     `;
@@ -490,7 +467,7 @@ function getPdfTemplate(numControl, nombre, correo, grupo, especialidad, titulo,
 document.addEventListener('DOMContentLoaded', () => {
   Swal.fire({
     title: '¡Aviso Importante!',
-    text: 'Recuerda que solo se aceptará UN registro por número de control. Verifica todos tus datos y sube la mejor fotografía que tengas.',
+    text: 'Solo se aceptará UN registro por número de control. Sube la mejor fotografía que tengas.',
     icon: 'info',
     confirmButtonColor: '#ff2a5f',
     confirmButtonText: 'Entendido, comenzar',
@@ -522,9 +499,10 @@ step1Inputs.forEach(input => {
 });
 
 /* =========================================================================
-   3. LÓGICA DEL FORMULARIO (PASOS Y API SCRIPT)
+   3. LÓGICA DEL FORMULARIO Y VARIABLES GLOBALES
    ========================================================================= */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhBjOqJiz8BsRlS5hCyn-cACeCSEzsM4os_CMf37L0kZKeKGRe6d_MXtMil-AorcbFMw/exec';
+let archivoSeleccionado = null; // VARIABLE CLAVE PARA EL ARCHIVO
 
 function jsonFetch(url, options) { return fetch(url, options).then(r => { if (!r.ok) throw new Error('Respuesta no OK'); return r.json(); }); }
 function showError(title, text) { Swal.fire({ icon: 'error', title, text, confirmButtonColor: '#ff2a5f' }); }
@@ -574,7 +552,6 @@ function verificarYContinuar() {
 }
 
 function generarFichaResumen() {
-  const file = document.getElementById('foto').files[0];
   const summaryCard = document.getElementById('summaryCard');
   summaryCard.innerHTML = `
     <div class="summary-item"><span class="summary-label">Núm. Control</span><span class="summary-value">${escapeHtml(document.getElementById('numeroControl').value)}</span></div>
@@ -582,18 +559,17 @@ function generarFichaResumen() {
     <div class="summary-item"><span class="summary-label">Correo Electrónico</span><span class="summary-value">${escapeHtml(document.getElementById('correo').value)}</span></div>
     <div class="summary-item"><span class="summary-label">Grupo y Especialidad</span><span class="summary-value">${escapeHtml(document.getElementById('grupo').value)} - ${escapeHtml(document.getElementById('especialidad').value)}</span></div>
     <div class="summary-item full"><span class="summary-label">Título de la Fotografía</span><span class="summary-value">${escapeHtml(document.getElementById('titulo').value)}</span></div>
-    <div class="summary-item full"><span class="summary-label">Archivo Adjunto</span><span class="summary-value" style="color:var(--exito-neón)"><i class="fas fa-image"></i> ${escapeHtml(file.name)}</span></div>
+    <div class="summary-item full"><span class="summary-label">Archivo Adjunto</span><span class="summary-value" style="color:var(--exito-neón)"><i class="fas fa-image"></i> ${escapeHtml(archivoSeleccionado.name)}</span></div>
   `;
 }
 
 function nextStep(step) {
   if (step === 2) {
     const titulo = document.getElementById('titulo').value.trim();
-    const file = document.getElementById('foto').files[0];
-    if (!titulo || !file) return Swal.fire({ icon: 'warning', title: 'Falta la fotografía', text: 'Sube tu imagen y ponle un título.', confirmButtonColor: '#ff2a5f' });
+    if (!titulo || !archivoSeleccionado) {
+      return Swal.fire({ icon: 'warning', title: 'Faltan datos', text: 'Asegúrate de ponerle un título y adjuntar o tomar tu fotografía.', confirmButtonColor: '#ff2a5f' });
+    }
     
-    // Ya no hay bloqueo de 3MB porque el sistema comprimirá la foto automáticamente al enviar.
-
     generarFichaResumen(); 
     document.getElementById('step2').classList.remove('active');
     document.getElementById('step3').classList.add('active');
@@ -610,70 +586,61 @@ function prevStep(step) {
 }
 
 const step2InputTitle = document.getElementById('titulo');
-const step2File = document.getElementById('foto');
 
 function updateStep2Progress() {
   let filled = 0;
-  if(step2InputTitle.value.trim().length > 0) { filled++; step2InputTitle.classList.add('is-valid'); } else { step2InputTitle.classList.remove('is-valid'); }
-  if(step2File.files.length > 0) filled++;
+  if(step2InputTitle.value.trim().length > 0) { filled++; step2InputTitle.classList.add('is-valid'); } 
+  else { step2InputTitle.classList.remove('is-valid'); }
+  if(archivoSeleccionado !== null) filled++;
   document.getElementById('liveProgressBarStep2').style.width = (filled / 2) * 100 + '%';
 }
 step2InputTitle.addEventListener('input', updateStep2Progress);
 
-function updateFileName() {
-  const input = document.getElementById('foto');
-  const fileNameSpan = document.getElementById('fileName');
-  const wrapper = document.getElementById('uploadWrapper');
+function procesarArchivo(input) {
   if (input.files && input.files.length > 0) {
-    fileNameSpan.innerHTML = `<strong style="color:var(--exito-neón);">¡Foto adjuntada con éxito!</strong><br>${input.files[0].name}`;
+    archivoSeleccionado = input.files[0]; 
+    const fileNameSpan = document.getElementById('fileName');
+    const wrapper = document.getElementById('uploadWrapper');
+    
+    fileNameSpan.innerHTML = `<strong style="color:var(--exito-neón);">¡Foto lista para enviar!</strong><br>${archivoSeleccionado.name}`;
     wrapper.classList.add('has-file');
-    updateStep2Progress();
-  } else {
-    fileNameSpan.textContent = 'Toca aquí para seleccionar tu fotografía';
-    wrapper.classList.remove('has-file');
+
+    if (input.id === 'foto-camara') document.getElementById('foto-galeria').value = "";
+    else document.getElementById('foto-camara').value = "";
+
     updateStep2Progress();
   }
 }
 
 /* =========================================================================
-   4. SUBIDA Y COMPRESIÓN AUTOMÁTICA
+   4. SUBIDA CON MANEJO DE ERRORES (FALLBACK PARA CELULARES)
    ========================================================================= */
 document.getElementById('concursoForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  const file = document.getElementById('foto').files[0];
+  const file = archivoSeleccionado;
+  
   if (!file) return showError('Falta archivo', 'Por favor selecciona una foto.');
 
   Swal.fire({ title: 'Procesando...', html: 'Optimizando imagen y enviando datos.<br>No cierres esta ventana.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
   const enviarAlServidor = (base64Data, mime, filename) => {
     const payload = {
-      action: "upload",
-      numeroControl: document.getElementById('numeroControl').value.trim(),
-      nombre: document.getElementById('nombre').value.trim(),
-      correo: document.getElementById('correo').value.trim(),
-      grupo: document.getElementById('grupo').value.trim(),
-      especialidad: document.getElementById('especialidad').value.trim(),
-      titulo: document.getElementById('titulo').value.trim(),
-      fileBase64: base64Data,
-      mimeType: mime,
-      fileName: filename
+      action: "upload", numeroControl: document.getElementById('numeroControl').value.trim(),
+      nombre: document.getElementById('nombre').value.trim(), correo: document.getElementById('correo').value.trim(),
+      grupo: document.getElementById('grupo').value.trim(), especialidad: document.getElementById('especialidad').value.trim(),
+      titulo: document.getElementById('titulo').value.trim(), fileBase64: base64Data, mimeType: mime, fileName: filename
     };
 
-    jsonFetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    }).then(data => {
+    jsonFetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+    .then(data => {
       if (data.status === "success") {
         const divPdf = document.createElement('div');
         divPdf.innerHTML = getPdfTemplate(payload.numeroControl, payload.nombre, payload.correo, payload.grupo, payload.especialidad, payload.titulo, filename);
-        
         const opt = { margin: 0, filename: `Ficha_Registro_${payload.numeroControl}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
 
         html2pdf().set(opt).from(divPdf).save().then(() => {
             Swal.fire({ 
-              icon: 'success', 
-              title: '¡Registro Exitoso!', 
+              icon: 'success', title: '¡Registro Exitoso!', 
               html: `
                 <p style="margin-bottom:12px; font-size:16px;">Tu comprobante <strong>PDF se ha descargado automáticamente</strong>.</p>
                 <div style="background: rgba(255, 42, 95, 0.1); border: 1px solid var(--vino-neón); padding: 15px; border-radius: 12px; margin-bottom: 25px; text-align: left;">
@@ -690,7 +657,6 @@ document.getElementById('concursoForm').addEventListener('submit', function(e) {
               showConfirmButton: true, confirmButtonColor: '#10b981', confirmButtonText: 'Ya copié mis datos, Finalizar', allowOutsideClick: false
             }).then(() => location.reload());
         });
-
       } else {
         Swal.fire('Atención', data.message || 'Ocurrió un error inesperado', 'error');
       }
@@ -699,31 +665,68 @@ document.getElementById('concursoForm').addEventListener('submit', function(e) {
     });
   };
 
-  // Compresión automática de imagen (Resuelve problemas de falta de memoria en celulares)
   if(file.type.startsWith('image/')) {
     const reader = new FileReader();
+    
+    // AQUÍ ESTÁ EL FALLBACK SI EL TELÉFONO SE QUEDA SIN MEMORIA AL LEER LA IMAGEN
+    reader.onerror = function() {
+      Swal.close();
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al leer tu imagen',
+        html: '<p>Tu dispositivo no pudo procesar la fotografía, probablemente por falta de memoria RAM o porque el archivo es demasiado grande.</p><br><p style="color: #ff2a5f; font-weight: 600;">Por favor, intenta subir tu fotografía desde una computadora (PC).</p>',
+        confirmButtonColor: '#ff2a5f',
+        confirmButtonText: 'Entendido'
+      });
+    };
+
     reader.readAsDataURL(file);
     reader.onload = function(event) {
       const img = new Image();
+      
+      // FALLBACK SI EL TELÉFONO NO PUEDE DIBUJAR LA IMAGEN EN EL CANVAS
+      img.onerror = function() {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Formato no soportado o archivo pesado',
+          html: '<p>El navegador de tu dispositivo no pudo renderizar esta imagen.</p><br><p style="color: #ff2a5f; font-weight: 600;">Por favor, intenta realizar tu registro usando una computadora (PC).</p>',
+          confirmButtonColor: '#ff2a5f',
+          confirmButtonText: 'Entendido'
+        });
+      };
+
       img.src = event.target.result;
       img.onload = function() {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1600; // Excelente calidad, peso muy bajo
-        const MAX_HEIGHT = 1600;
-        let width = img.width;
-        let height = img.height;
+        try {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1600;
+          const MAX_HEIGHT = 1600;
+          let width = img.width;
+          let height = img.height;
 
-        if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
-        else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-        
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85); // Comprime a JPG al 85% de calidad
-        const base64String = dataUrl.split(',')[1];
-        enviarAlServidor(base64String, 'image/jpeg', file.name);
+          if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
+          else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85); 
+          const base64String = dataUrl.split(',')[1];
+          enviarAlServidor(base64String, 'image/jpeg', file.name);
+        } catch(e) {
+          // Última línea de defensa: Si el canvas crashea por RAM
+          Swal.close();
+          Swal.fire({
+            icon: 'error',
+            title: 'Memoria insuficiente',
+            html: '<p>Tu teléfono se quedó sin recursos al intentar comprimir la imagen.</p><br><p style="color: #ff2a5f; font-weight: 600;">Para asegurar tu participación, te pedimos que subas la foto desde una computadora (PC).</p>',
+            confirmButtonColor: '#ff2a5f',
+            confirmButtonText: 'Lo intentaré desde PC'
+          });
+        }
       };
     };
   } else {
@@ -862,7 +865,6 @@ window.abrirPDFAdmin = function(idx) {
     }).catch(() => { Swal.fire('Error', 'No se pudo generar el documento', 'error'); });
 }
 
-// Filtros y Controles del Admin
 document.getElementById('adminFilter').addEventListener('change', (e) => { aplicarFiltro(e.target.value); });
 function aplicarFiltro(filtro) {
   const cards = document.querySelectorAll('.photo-card');
@@ -873,7 +875,6 @@ document.getElementById('gapRange').addEventListener('input', (e) => { document.
 document.getElementById('reloadBtn').addEventListener('click', cargarGaleria);
 document.getElementById('logoutBtn').addEventListener('click', () => { Swal.fire({title: '¿Cerrar sesión?', showCancelButton: true, confirmButtonColor: '#ff2a5f', confirmButtonText: 'Sí, salir'}).then(r => { if(r.isConfirmed) cambiarVista('studentView'); }); });
 
-// Descargar Excel (CSV)
 document.getElementById('btnDownloadCSV').addEventListener('click', () => {
   const finalistas = galleryData.filter(item => item.estado === 'FINALISTA');
   if (finalistas.length === 0) return Swal.fire('Sin resultados', 'Aún no hay finalistas seleccionados para descargar.', 'info');
@@ -891,7 +892,7 @@ document.getElementById('btnDownloadCSV').addEventListener('click', () => {
 });
 
 /* =========================================================================
-   6. IMPRESIÓN DE FINALISTAS EN PDF (UNA FOTO POR HOJA)
+   6. IMPRESIÓN DE FINALISTAS EN PDF
    ========================================================================= */
 document.getElementById('printBtn').addEventListener('click', () => {
   const finalistas = galleryData.filter(item => item.estado === 'FINALISTA');
